@@ -1,0 +1,172 @@
+-- KAISER_V1 Script for Brookhaven RP
+-- Created by KING_KAISER | Username: SUPREME_AURA350
+
+local Players = game:GetService("Players")
+local TextChatService = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- 1. Execute Instant Notifications & Brookhaven Name/Bio Update
+local function onExecution()
+    -- Chat Activation Message
+    pcall(function()
+        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+            if generalChannel then
+                generalChannel:SendAsync("KAISER_V1 Script Activated!")
+            end
+        else
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("KAISER_V1 Script Activated!", "All")
+        end
+    end)
+
+    -- Brookhaven Roleplay Name & Bio Update
+    pcall(function()
+        local RPEvent = ReplicatedStorage:FindFirstChild("RE", true) or ReplicatedStorage:FindFirstChild("RPEvent", true)
+        if RPEvent then
+            -- Update Name to KAISER_V2
+            RPEvent:FireServer("RPName", "KAISER_V2")
+            -- Update Bio to welcome message
+            RPEvent:FireServer("RPBio", "welcome " .. LocalPlayer.Name .. " To Kaiser hub.")
+        end
+    end)
+end
+
+onExecution()
+
+-- 2. Build Custom UI (KAISER_V1)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KaiserHubGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Frame Window
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 320, 0, 240)
+MainFrame.Position = UDim2.new(0.5, -160, 0.5, -120)
+MainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 32)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainUICorner = Instance.new("UICorner")
+MainUICorner.CornerRadius = UDim.new(0, 10)
+MainUICorner.Parent = MainFrame
+
+-- Top Bar Header
+local TopBar = Instance.new("Frame")
+TopBar.Size = UDim2.new(1, 0, 0, 35)
+TopBar.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+TopBar.BorderSizePixel = 0
+TopBar.Parent = MainFrame
+
+local TopBarCorner = Instance.new("UICorner")
+TopBarCorner.CornerRadius = UDim.new(0, 10)
+TopBarCorner.Parent = TopBar
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, -40, 1, 0)
+TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "KAISER_V1 | By SUPREME_AURA350"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 13
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = TopBar
+
+-- Minimize Button (-)
+local MinimizeBtn = Instance.new("TextButton")
+MinimizeBtn.Size = UDim2.new(0, 25, 0, 25)
+MinimizeBtn.Position = UDim2.new(1, -30, 0, 5)
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+MinimizeBtn.Text = "-"
+MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeBtn.TextSize = 16
+MinimizeBtn.Font = Enum.Font.SourceSansBold
+MinimizeBtn.Parent = TopBar
+
+local MinCorner = Instance.new("UICorner")
+MinCorner.CornerRadius = UDim.new(0, 5)
+MinCorner.Parent = MinimizeBtn
+
+-- Floating Minimized Icon Button (Red Square with 'K')
+local MinimizedIcon = Instance.new("TextButton")
+MinimizedIcon.Name = "MinimizedIcon"
+MinimizedIcon.Size = UDim2.new(0, 55, 0, 55)
+MinimizedIcon.Position = UDim2.new(0, 20, 0.4, 0)
+MinimizedIcon.BackgroundColor3 = Color3.fromRGB(220, 40, 40) -- Red Tab Color
+MinimizedIcon.Text = "K"
+MinimizedIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizedIcon.TextSize = 28
+MinimizedIcon.Font = Enum.Font.SourceSansBold
+MinimizedIcon.Visible = false
+MinimizedIcon.Active = true
+MinimizedIcon.Draggable = true
+MinimizedIcon.Parent = ScreenGui
+
+local IconCorner = Instance.new("UICorner")
+IconCorner.CornerRadius = UDim.new(0, 12)
+IconCorner.Parent = MinimizedIcon
+
+-- Content Area: Start & Stop Buttons
+local StartBtn = Instance.new("TextButton")
+StartBtn.Size = UDim2.new(0, 125, 0, 45)
+StartBtn.Position = UDim2.new(0, 20, 0, 65)
+StartBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 90) -- Green
+StartBtn.Text = "Start"
+StartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StartBtn.TextSize = 18
+StartBtn.Font = Enum.Font.SourceSansBold
+StartBtn.Parent = MainFrame
+
+local StartCorner = Instance.new("UICorner")
+StartCorner.CornerRadius = UDim.new(0, 8)
+StartCorner.Parent = StartBtn
+
+local StopBtn = Instance.new("TextButton")
+StopBtn.Size = UDim2.new(0, 125, 0, 45)
+StopBtn.Position = UDim2.new(1, -145, 0, 65)
+StopBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 30) -- Red
+StopBtn.Text = "Stop"
+StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StopBtn.TextSize = 18
+StopBtn.Font = Enum.Font.SourceSansBold
+StopBtn.Parent = MainFrame
+
+local StopCorner = Instance.new("UICorner")
+StopCorner.CornerRadius = UDim.new(0, 8)
+StopCorner.Parent = StopBtn
+
+-- Footer Credits
+local CreditsLabel = Instance.new("TextLabel")
+CreditsLabel.Size = UDim2.new(1, 0, 0, 40)
+CreditsLabel.Position = UDim2.new(0, 0, 1, -45)
+CreditsLabel.BackgroundTransparency = 1
+CreditsLabel.Text = "script Created by KING_KAISER\nUsername: SUPREME_AURA350"
+CreditsLabel.TextColor3 = Color3.fromRGB(160, 160, 175)
+CreditsLabel.TextSize = 12
+CreditsLabel.Font = Enum.Font.SourceSans
+CreditsLabel.Parent = MainFrame
+
+-- Minimize & Restore Logic
+MinimizeBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    MinimizedIcon.Visible = true
+end)
+
+MinimizedIcon.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    MinimizedIcon.Visible = false
+end)
+
+-- Button Actions
+StartBtn.MouseButton1Click:Connect(function()
+    print("[KAISER_V1]: Started")
+end)
+
+StopBtn.MouseButton1Click:Connect(function()
+    print("[KAISER_V1]: Stopped")
+end)
