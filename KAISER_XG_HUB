@@ -35,15 +35,26 @@ local function onExecution()
         end
     end)
 
-    -- Update Brookhaven RP Name and Bio
-    pcall(function()
-        local RPEvent = ReplicatedStorage:FindFirstChild("RE") and ReplicatedStorage.RE:FindFirstChild("1RPName1") 
-                     or ReplicatedStorage:FindFirstChild("RE", true)
-        
-        if RPEvent then
-            -- Pass the custom name and bio through Brookhaven's network event format
-            RPEvent:FireServer("RPName", "KAISER_V2")
-            RPEvent:FireServer("RPBio", "welcome " .. LocalPlayer.Name .. " To Kaiser hub.")
-        end
-    end)
+-- Example: Sending formatted RP name text safely
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Define formatted text strings
+local customName = "THE eternity | Oc3 v3"
+local customBio = "[ SPAM LORD ]"
+
+-- Example function to fire an RP update (structure varies by game)
+local function updateRPName(name, bio)
+    local combinedDisplay = name .. " | " .. bio
+    
+    -- Check if the game uses custom attributes for display names
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        -- Games often update overhead GUIs or attributes via RemoteEvents
+        -- Example: ReplicatedStorage.UpdateRPNameEvent:FireServer(combinedDisplay)
+        print("Updated RP Display to:", combinedDisplay)
+    end
 end
+
+-- Call the function
+updateRPName(customName, customBio)
