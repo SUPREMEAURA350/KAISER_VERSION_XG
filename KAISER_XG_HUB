@@ -10,6 +10,7 @@ local LocalPlayer = Players.LocalPlayer
 -- Global Loop & Target Control
 _G.LoopMessages = false
 _G.TargetPlayer = ""
+_G.SpamDelay = 1  -- Default delay
 
 -- Clean up existing instance to avoid duplicate UI
 if LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("KaiserHubGui") then
@@ -49,8 +50,8 @@ ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 -- Main Frame Window
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 400, 0, 320)
-MainFrame.Position = UDim2.new(0.5, -200, 0.5, -160)
+MainFrame.Size = UDim2.new(0, 400, 0, 420)  -- Increased height for dropdown
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -210)
 MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -107,7 +108,7 @@ local MinBtnCorner = Instance.new("UICorner")
 MinBtnCorner.CornerRadius = UDim.new(0, 6)
 MinBtnCorner.Parent = MinimizeBtn
 
--- 3. Minimized Floating Icon (Changed Background Color to Black)
+-- 3. Minimized Floating Icon
 local MinimizedIcon = Instance.new("TextButton")
 MinimizedIcon.Name = "MinimizedIcon"
 MinimizedIcon.Size = UDim2.new(0, 55, 0, 55)
@@ -126,7 +127,6 @@ local IconCorner = Instance.new("UICorner")
 IconCorner.CornerRadius = UDim.new(0, 12)
 IconCorner.Parent = MinimizedIcon
 
--- RGB Border Stroke for Minimized Icon
 local IconBorder = Instance.new("UIStroke")
 IconBorder.Name = "IconBorder"
 IconBorder.Color = Color3.fromRGB(255, 0, 0)
@@ -134,15 +134,15 @@ IconBorder.Thickness = 3
 IconBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 IconBorder.Parent = MinimizedIcon
 
--- Smooth RGB Rainbow Animation Loop (Main Window Border, Title Text & Minimized Icon Border)
+-- Smooth RGB Rainbow Animation Loop
 task.spawn(function()
     local rainbowColors = {
-        Color3.fromRGB(255, 0, 0),    -- Red
-        Color3.fromRGB(255, 127, 0),  -- Orange
-        Color3.fromRGB(0, 0, 255),    -- Blue
-        Color3.fromRGB(0, 255, 0),    -- Green
-        Color3.fromRGB(255, 255, 0),  -- Yellow
-        Color3.fromRGB(139, 0, 255)   -- Purple
+        Color3.fromRGB(255, 0, 0),
+        Color3.fromRGB(255, 127, 0),
+        Color3.fromRGB(0, 0, 255),
+        Color3.fromRGB(0, 255, 0),
+        Color3.fromRGB(255, 255, 0),
+        Color3.fromRGB(139, 0, 255)
     }
     
     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
@@ -207,10 +207,125 @@ TargetBox:GetPropertyChangedSignal("Text"):Connect(function()
     _G.TargetPlayer = TargetBox.Text
 end)
 
--- 6. Control Buttons (Start / Stop)
+-- 6. SPEED DROPDOWN MENU (NEW)
+local SpeedLabel = Instance.new("TextLabel")
+SpeedLabel.Size = UDim2.new(0.5, -20, 0, 30)
+SpeedLabel.Position = UDim2.new(0, 20, 0, 150)
+SpeedLabel.BackgroundTransparency = 1
+SpeedLabel.Text = "⏱ Spam Speed (sec)"
+SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedLabel.TextSize = 14
+SpeedLabel.Font = Enum.Font.SourceSansBold
+SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
+SpeedLabel.Parent = MainFrame
+
+-- Dropdown Button (shows current selection)
+local DropdownBtn = Instance.new("TextButton")
+DropdownBtn.Name = "DropdownBtn"
+DropdownBtn.Size = UDim2.new(0.5, -20, 0, 35)
+DropdownBtn.Position = UDim2.new(0.5, 0, 0, 147)
+DropdownBtn.BackgroundColor3 = Color3.fromRGB(32, 32, 45)
+DropdownBtn.Text = "1.0 sec"
+DropdownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DropdownBtn.TextSize = 15
+DropdownBtn.Font = Enum.Font.SourceSansBold
+DropdownBtn.Parent = MainFrame
+
+local DropdownCorner = Instance.new("UICorner")
+DropdownCorner.CornerRadius = UDim.new(0, 8)
+DropdownCorner.Parent = DropdownBtn
+
+-- Dropdown Arrow
+local ArrowLabel = Instance.new("TextLabel")
+ArrowLabel.Size = UDim2.new(0, 30, 1, 0)
+ArrowLabel.Position = UDim2.new(1, -30, 0, 0)
+ArrowLabel.BackgroundTransparency = 1
+ArrowLabel.Text = "▼"
+ArrowLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+ArrowLabel.TextSize = 12
+ArrowLabel.Font = Enum.Font.SourceSansBold
+ArrowLabel.Parent = DropdownBtn
+
+-- Dropdown List Frame (hidden by default)
+local DropdownFrame = Instance.new("Frame")
+DropdownFrame.Name = "DropdownFrame"
+DropdownFrame.Size = UDim2.new(0.5, -20, 0, 210)
+DropdownFrame.Position = UDim2.new(0.5, 0, 0, 185)
+DropdownFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 38)
+DropdownFrame.BorderSizePixel = 0
+DropdownFrame.Visible = false
+DropdownFrame.ZIndex = 10
+DropdownFrame.Parent = MainFrame
+
+local DropdownFrameCorner = Instance.new("UICorner")
+DropdownFrameCorner.CornerRadius = UDim.new(0, 8)
+DropdownFrameCorner.Parent = DropdownFrame
+
+-- ScrollingFrame for speed options
+local SpeedList = Instance.new("ScrollingFrame")
+SpeedList.Size = UDim2.new(1, -10, 1, -10)
+SpeedList.Position = UDim2.new(0, 5, 0, 5)
+SpeedList.BackgroundTransparency = 1
+SpeedList.ScrollBarThickness = 4
+SpeedList.CanvasSize = UDim2.new(0, 0, 0, 280)  -- 14 options * 20px each
+SpeedList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+SpeedList.Parent = DropdownFrame
+
+-- Speed options list (exactly as requested)
+local speedOptions = {0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0}
+
+-- Create each speed option button
+local yPos = 0
+for _, speed in ipairs(speedOptions) do
+    local optionBtn = Instance.new("TextButton")
+    optionBtn.Size = UDim2.new(1, -10, 0, 18)
+    optionBtn.Position = UDim2.new(0, 5, 0, yPos)
+    optionBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+    optionBtn.Text = string.format("%.1f sec", speed)
+    optionBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    optionBtn.TextSize = 13
+    optionBtn.Font = Enum.Font.SourceSans
+    optionBtn.BorderSizePixel = 0
+    optionBtn.Parent = SpeedList
+    
+    local optionCorner = Instance.new("UICorner")
+    optionCorner.CornerRadius = UDim.new(0, 4)
+    optionCorner.Parent = optionBtn
+    
+    -- Select this speed when clicked
+    optionBtn.MouseButton1Click:Connect(function()
+        _G.SpamDelay = speed
+        DropdownBtn.Text = string.format("%.1f sec", speed)
+        DropdownFrame.Visible = false
+    end)
+    
+    yPos = yPos + 20
+end
+
+-- Toggle dropdown visibility
+DropdownBtn.MouseButton1Click:Connect(function()
+    DropdownFrame.Visible = not DropdownFrame.Visible
+end)
+
+-- Close dropdown when clicking elsewhere
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local mousePos = input.Position
+        local absPos = DropdownBtn.AbsolutePosition
+        local absSize = DropdownBtn.AbsoluteSize
+        
+        -- If click is outside dropdown button and dropdown frame, close it
+        if not (mousePos.X >= absPos.X and mousePos.X <= absPos.X + absSize.X and
+                mousePos.Y >= absPos.Y and mousePos.Y <= absPos.Y + absSize.Y) then
+            DropdownFrame.Visible = false
+        end
+    end
+end)
+
+-- 7. Control Buttons (Start / Stop) - moved down
 local StartBtn = Instance.new("TextButton")
 StartBtn.Size = UDim2.new(0, 170, 0, 45)
-StartBtn.Position = UDim2.new(0, 20, 0, 155)
+StartBtn.Position = UDim2.new(0, 20, 0, 240)
 StartBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 85)
 StartBtn.Text = "START"
 StartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -224,7 +339,7 @@ StartCorner.Parent = StartBtn
 
 local StopBtn = Instance.new("TextButton")
 StopBtn.Size = UDim2.new(0, 170, 0, 45)
-StopBtn.Position = UDim2.new(1, -190, 0, 155)
+StopBtn.Position = UDim2.new(1, -190, 0, 240)
 StopBtn.BackgroundColor3 = Color3.fromRGB(215, 35, 35)
 StopBtn.Text = "STOP"
 StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -247,7 +362,7 @@ CreditsLabel.TextSize = 13
 CreditsLabel.Font = Enum.Font.SourceSans
 CreditsLabel.Parent = MainFrame
 
--- 7. UI Minimize & Restore Logic
+-- 8. UI Minimize & Restore Logic
 MinimizeBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     MinimizedIcon.Visible = true
@@ -258,7 +373,7 @@ MinimizedIcon.MouseButton1Click:Connect(function()
     MinimizedIcon.Visible = false
 end)
 
--- 8. Continuous Message Loop Logic
+-- 9. Continuous Message Loop Logic (uses _G.SpamDelay dynamically)
 local function startSpamLoop()
     if _G.LoopMessages then return end
     _G.LoopMessages = true
@@ -288,10 +403,10 @@ local function startSpamLoop()
                     end
                 end)
 
-                task.wait(2)
+                task.wait(_G.SpamDelay)  -- Uses selected speed
             end
 
-            task.wait(3)
+            task.wait(_G.SpamDelay * 1.5)  -- Extra pause between cycles
         end
     end)
 end
@@ -303,30 +418,3 @@ end)
 StopBtn.MouseButton1Click:Connect(function()
     _G.LoopMessages = false
 end)
-
-local delayTime = 1.0 -- Default delay in seconds
-
-DelayBox:GetPropertyChangedSignal("Text"):Connect(function()
-    local numericValue = tonumber(DelayBox.Text)
-    if numericValue then
-        -- Restrict the delay value to a safe range
-        delayTime = math.clamp(numericValue, 0.7, 2.0)
-    end
-end)
-
-local isRunning = false
-
-local function startLoop()
-    if isRunning then return end
-    isRunning = true
-
-    task.spawn(function()
-        while isRunning do
-            -- Perform task here
-            
-            -- Yield using the dynamically set delay variable
-            task.wait(delayTime)
-        end
-    end)
-end
-
