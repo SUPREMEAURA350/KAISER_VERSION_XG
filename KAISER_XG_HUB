@@ -10,7 +10,7 @@ local LocalPlayer = Players.LocalPlayer
 -- Global Loop & Target Control
 _G.LoopMessages = false
 _G.TargetPlayer = ""
-_G.SpamDelay = 1  -- Default delay
+_G.SpamDelay = 1  -- Default delay (1 second)
 
 -- Clean up existing instance to avoid duplicate UI
 if LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("KaiserHubGui") then
@@ -23,10 +23,10 @@ local function onExecution()
         if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
             local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
             if generalChannel then
-                generalChannel:SendAsync("@@@@@@@@@@@@-_-_-_-_-_-_-_-_-_-_-_-_-//-_-/========[👑NIGHTMARES SPAMMER EXECUTED👑]FOR H8RS🌸🌸")
+                generalChannel:SendAsync("@@@@@@@@@@@@---_---_---_---_-//-_-/========[👑NIGHTMARES SPAMMER EXECUTED👑]FOR H8RS🌸🌸")
             end
         else
-            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("@@@@@@@@@@@@-_-_-_-_-_-_-_-_-_-_-_-_-//-_-/========[👑NIGHTMARES SPAMMER EXECUTED👑]FOR H8RS🌸🌸", "All")
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("@@@@@@@@@@@@---_---_---_---_-//-_-/========[👑NIGHTMARES SPAMMER EXECUTED👑]FOR H8RS🌸🌸", "All")
         end
     end)
 
@@ -47,10 +47,10 @@ ScreenGui.Name = "KaiserHubGui"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Main Frame Window
+-- Main Frame Window (height increased to fit speed control)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 400, 0, 420)  -- Increased height for dropdown
+MainFrame.Size = UDim2.new(0, 400, 0, 420)
 MainFrame.Position = UDim2.new(0.5, -200, 0.5, -210)
 MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
 MainFrame.BorderSizePixel = 0
@@ -144,15 +144,15 @@ task.spawn(function()
         Color3.fromRGB(255, 255, 0),
         Color3.fromRGB(139, 0, 255)
     }
-    
+
     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-    
+
     while true do
         for _, color in ipairs(rainbowColors) do
             local strokeTween = TweenService:Create(MainBorder, tweenInfo, {Color = color})
             local titleTween = TweenService:Create(Title, tweenInfo, {TextColor3 = color})
             local iconBorderTween = TweenService:Create(IconBorder, tweenInfo, {Color = color})
-            
+
             strokeTween:Play()
             titleTween:Play()
             iconBorderTween:Play()
@@ -207,7 +207,8 @@ TargetBox:GetPropertyChangedSignal("Text"):Connect(function()
     _G.TargetPlayer = TargetBox.Text
 end)
 
--- 6. SPEED DROPDOWN MENU (NEW)
+-- ========== SPEED CONTROL DROPDOWN (NEW) ==========
+-- Speed Label
 local SpeedLabel = Instance.new("TextLabel")
 SpeedLabel.Size = UDim2.new(0.5, -20, 0, 30)
 SpeedLabel.Position = UDim2.new(0, 20, 0, 150)
@@ -219,7 +220,7 @@ SpeedLabel.Font = Enum.Font.SourceSansBold
 SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
 SpeedLabel.Parent = MainFrame
 
--- Dropdown Button (shows current selection)
+-- Dropdown Button
 local DropdownBtn = Instance.new("TextButton")
 DropdownBtn.Name = "DropdownBtn"
 DropdownBtn.Size = UDim2.new(0.5, -20, 0, 35)
@@ -267,11 +268,11 @@ SpeedList.Size = UDim2.new(1, -10, 1, -10)
 SpeedList.Position = UDim2.new(0, 5, 0, 5)
 SpeedList.BackgroundTransparency = 1
 SpeedList.ScrollBarThickness = 4
-SpeedList.CanvasSize = UDim2.new(0, 0, 0, 280)  -- 14 options * 20px each
+SpeedList.CanvasSize = UDim2.new(0, 0, 0, 280)
 SpeedList.AutomaticCanvasSize = Enum.AutomaticSize.Y
 SpeedList.Parent = DropdownFrame
 
--- Speed options list (exactly as requested)
+-- Speed options (exactly as requested)
 local speedOptions = {0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0}
 
 -- Create each speed option button
@@ -287,18 +288,18 @@ for _, speed in ipairs(speedOptions) do
     optionBtn.Font = Enum.Font.SourceSans
     optionBtn.BorderSizePixel = 0
     optionBtn.Parent = SpeedList
-    
+
     local optionCorner = Instance.new("UICorner")
     optionCorner.CornerRadius = UDim.new(0, 4)
     optionCorner.Parent = optionBtn
-    
+
     -- Select this speed when clicked
     optionBtn.MouseButton1Click:Connect(function()
         _G.SpamDelay = speed
         DropdownBtn.Text = string.format("%.1f sec", speed)
         DropdownFrame.Visible = false
     end)
-    
+
     yPos = yPos + 20
 end
 
@@ -313,7 +314,7 @@ MainFrame.InputBegan:Connect(function(input)
         local mousePos = input.Position
         local absPos = DropdownBtn.AbsolutePosition
         local absSize = DropdownBtn.AbsoluteSize
-        
+
         -- If click is outside dropdown button and dropdown frame, close it
         if not (mousePos.X >= absPos.X and mousePos.X <= absPos.X + absSize.X and
                 mousePos.Y >= absPos.Y and mousePos.Y <= absPos.Y + absSize.Y) then
@@ -321,8 +322,9 @@ MainFrame.InputBegan:Connect(function(input)
         end
     end
 end)
+-- ========== END SPEED CONTROL ==========
 
--- 7. Control Buttons (Start / Stop) - moved down
+-- 6. Control Buttons (Start / Stop) - moved down for speed control
 local StartBtn = Instance.new("TextButton")
 StartBtn.Size = UDim2.new(0, 170, 0, 45)
 StartBtn.Position = UDim2.new(0, 20, 0, 240)
@@ -362,7 +364,7 @@ CreditsLabel.TextSize = 13
 CreditsLabel.Font = Enum.Font.SourceSans
 CreditsLabel.Parent = MainFrame
 
--- 8. UI Minimize & Restore Logic
+-- 7. UI Minimize & Restore Logic
 MinimizeBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     MinimizedIcon.Visible = true
@@ -373,7 +375,7 @@ MinimizedIcon.MouseButton1Click:Connect(function()
     MinimizedIcon.Visible = false
 end)
 
--- 9. Continuous Message Loop Logic (uses _G.SpamDelay dynamically)
+-- 8. Continuous Message Loop Logic (uses _G.SpamDelay dynamically)
 local function startSpamLoop()
     if _G.LoopMessages then return end
     _G.LoopMessages = true
@@ -391,7 +393,7 @@ local function startSpamLoop()
 
             for _, msg in ipairs(messages) do
                 if not _G.LoopMessages then break end
-                
+
                 pcall(function()
                     if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
                         local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
@@ -406,7 +408,7 @@ local function startSpamLoop()
                 task.wait(_G.SpamDelay)  -- Uses selected speed
             end
 
-            task.wait(_G.SpamDelay * 1.5)  -- Extra pause between cycles
+            task.wait(_G.SpamDelay * 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0)  -- Extra pause between cycles
         end
     end)
 end
