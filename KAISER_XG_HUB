@@ -1,35 +1,31 @@
--- Brookhaven RP Working Auto Name & Bio Script
+-- Brookhaven RP Auto Name & Bio Script (Updated)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Exact Text Formatting
 local rpNameText = "Oc3 v3 ultra spammer\nTHE eternity| Oc3 v3 ULTRA SPAM LORD C"
 local rpBioText = "@@@@@@@@@@@@===================\n\\================={ Oc3aN H8RS\n🗼 pe :D }🔥"
 
 local function applyProfile()
-    -- Look for standard Brookhaven RE Event Folder
-    local RE = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("RemoteEvents")
-    
-    if RE then
-        -- Method 1: Firing via main RE Client Trigger
-        for _, remote in pairs(RE:GetChildren()) do
-            if remote:IsA("RemoteEvent") then
-                pcall(function()
-                    remote:FireServer("RPName", rpNameText)
-                    remote:FireServer("RPBio", rpBioText)
-                    remote:FireServer("SetRPName", rpNameText)
-                    remote:FireServer("SetRPBio", rpBioText)
-                end)
+    -- 1. Fire Brookhaven's primary server remotes
+    pcall(function()
+        for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+            if obj:IsA("RemoteEvent") then
+                local n = obj.Name:lower()
+                if n == "bcevent" or n == "re" or n:find("roleplay") or n:find("rp") then
+                    obj:FireServer("RolePlayName", rpNameText)
+                    obj:FireServer("RolePlayBio", rpBioText)
+                    obj:FireServer("RPName", rpNameText)
+                    obj:FireServer("RPBio", rpBioText)
+                end
             end
         end
-    end
+    end)
 
-    -- Method 2: Direct UI / Character Customization Hook Fallback
+    -- 2. Direct client UI injection (forces text into the input boxes)
     pcall(function()
-        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+        local playerGui = LocalPlayer:WaitForChild("PlayerGui", 3)
         if playerGui then
-            -- Set text inside client UI textboxes if visible
             for _, v in pairs(playerGui:GetDescendants()) do
                 if v:IsA("TextBox") then
                     if v.Name:lower():find("name") then
@@ -43,9 +39,7 @@ local function applyProfile()
     end)
 end
 
--- Run function twice to ensure load registration
+-- Execute twice to handle initial menu loads
 applyProfile()
-task.wait(0.5)
+task.wait(1)
 applyProfile()
-
-
