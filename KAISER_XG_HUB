@@ -1,422 +1,51 @@
--- NIGHTMARES_SPAMMER Script for Brookhaven RP (100% Custom UI)
--- Created by KING_KAISER | Username: SUPREME_AURA350
-
-local Players = game:GetService("Players")
-local TextChatService = game:GetService("TextChatService")
+-- Brookhaven RP Working Auto Name & Bio Script
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Global Loop & Target Control
-_G.LoopMessages = false
-_G.TargetPlayer = ""
-_G.SpamDelay = 1  -- Default delay (1 second)
+-- Exact Text Formatting
+local rpNameText = "Oc3 v3 ultra spammer\nTHE eternity| Oc3 v3 ULTRA SPAM LORD C"
+local rpBioText = "@@@@@@@@@@@@===================\n\\================={ Oc3aN H8RS\n🗼 pe :D }🔥"
 
--- Clean up existing instance to avoid duplicate UI
-if LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("KaiserHubGui") then
-    LocalPlayer.PlayerGui.KaiserHubGui:Destroy()
-end
-
--- 1. Auto-Execution Actions
-local function onExecution()
-    pcall(function()
-        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
-            if generalChannel then
-                generalChannel:SendAsync("@@@@@@@@@@@@---_---_---_---_-//-_-/========[👑NIGHTMARES SPAMMER EXECUTED👑]FOR H8RS🌸🌸")
-            end
-        else
-            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("@@@@@@@@@@@@---_---_---_---_-//-_-/========[👑NIGHTMARES SPAMMER EXECUTED👑]FOR H8RS🌸🌸", "All")
-        end
-    end)
-
-    pcall(function()
-        local RPEvent = ReplicatedStorage:FindFirstChild("RE", true) or ReplicatedStorage:FindFirstChild("RPEvent", true)
-        if RPEvent then
-            RPEvent:FireServer("RPName", "KAISER_V2")
-            RPEvent:FireServer("RPBio", "welcome " .. LocalPlayer.Name .. " To Kaiser hub.")
-        end
-    end)
-end
-
-onExecution()
-
--- 2. Custom ScreenGui & Main Panel
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "KaiserHubGui"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-
--- Main Frame Window (height increased to fit speed control)
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 400, 0, 420)
-MainFrame.Position = UDim2.new(0.5, -200, 0.5, -210)
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.Parent = ScreenGui
-
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 10)
-MainCorner.Parent = MainFrame
-
--- Animated RGB Border for Main Window
-local MainBorder = Instance.new("UIStroke")
-MainBorder.Name = "MainBorder"
-MainBorder.Color = Color3.fromRGB(255, 0, 0)
-MainBorder.Thickness = 3
-MainBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-MainBorder.Parent = MainFrame
-
--- Header Bar
-local Header = Instance.new("Frame")
-Header.Size = UDim2.new(1, 0, 0, 40)
-Header.BackgroundColor3 = Color3.fromRGB(30, 30, 42)
-Header.BorderSizePixel = 0
-Header.Parent = MainFrame
-
-local HeaderCorner = Instance.new("UICorner")
-HeaderCorner.CornerRadius = UDim.new(0, 10)
-HeaderCorner.Parent = Header
-
--- Title Label with RGB Color
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -40, 1, 0)
-Title.Position = UDim2.new(0, 12, 0, 0)
-Title.BackgroundTransparency = 1
-Title.Text = "👑NIGHTMARES_SPAMMER👑"
-Title.TextColor3 = Color3.fromRGB(255, 0, 0)
-Title.TextSize = 18
-Title.Font = Enum.Font.SourceSansBold
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Parent = Header
-
--- Window Minimize Button (-)
-local MinimizeBtn = Instance.new("TextButton")
-MinimizeBtn.Size = UDim2.new(0, 28, 0, 28)
-MinimizeBtn.Position = UDim2.new(1, -34, 0, 6)
-MinimizeBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
-MinimizeBtn.Text = "-"
-MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-MinimizeBtn.TextSize = 18
-MinimizeBtn.Font = Enum.Font.SourceSansBold
-MinimizeBtn.Parent = Header
-
-local MinBtnCorner = Instance.new("UICorner")
-MinBtnCorner.CornerRadius = UDim.new(0, 6)
-MinBtnCorner.Parent = MinimizeBtn
-
--- 3. Minimized Floating Icon
-local MinimizedIcon = Instance.new("TextButton")
-MinimizedIcon.Name = "MinimizedIcon"
-MinimizedIcon.Size = UDim2.new(0, 55, 0, 55)
-MinimizedIcon.Position = UDim2.new(0, 20, 0.4, 0)
-MinimizedIcon.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
-MinimizedIcon.Text = "👑"
-MinimizedIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-MinimizedIcon.TextSize = 28
-MinimizedIcon.Font = Enum.Font.SourceSansBold
-MinimizedIcon.Visible = false
-MinimizedIcon.Active = true
-MinimizedIcon.Draggable = true
-MinimizedIcon.Parent = ScreenGui
-
-local IconCorner = Instance.new("UICorner")
-IconCorner.CornerRadius = UDim.new(0, 12)
-IconCorner.Parent = MinimizedIcon
-
-local IconBorder = Instance.new("UIStroke")
-IconBorder.Name = "IconBorder"
-IconBorder.Color = Color3.fromRGB(255, 0, 0)
-IconBorder.Thickness = 3
-IconBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-IconBorder.Parent = MinimizedIcon
-
--- Smooth RGB Rainbow Animation Loop
-task.spawn(function()
-    local rainbowColors = {
-        Color3.fromRGB(255, 0, 0),
-        Color3.fromRGB(255, 127, 0),
-        Color3.fromRGB(0, 0, 255),
-        Color3.fromRGB(0, 255, 0),
-        Color3.fromRGB(255, 255, 0),
-        Color3.fromRGB(139, 0, 255)
-    }
-
-    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-
-    while true do
-        for _, color in ipairs(rainbowColors) do
-            local strokeTween = TweenService:Create(MainBorder, tweenInfo, {Color = color})
-            local titleTween = TweenService:Create(Title, tweenInfo, {TextColor3 = color})
-            local iconBorderTween = TweenService:Create(IconBorder, tweenInfo, {Color = color})
-
-            strokeTween:Play()
-            titleTween:Play()
-            iconBorderTween:Play()
-            task.wait(1)
-        end
-    end
-end)
-
--- 4. Leadership Titles
-local LeftRoleLabel = Instance.new("TextLabel")
-LeftRoleLabel.Size = UDim2.new(0.5, -20, 0, 45)
-LeftRoleLabel.Position = UDim2.new(0, 15, 0, 48)
-LeftRoleLabel.BackgroundTransparency = 1
-LeftRoleLabel.Text = "👑NIGHTMARES OWNER👑\nALFA"
-LeftRoleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-LeftRoleLabel.TextSize = 15
-LeftRoleLabel.Font = Enum.Font.SourceSansBold
-LeftRoleLabel.TextXAlignment = Enum.TextXAlignment.Left
-LeftRoleLabel.Parent = MainFrame
-
-local RightRoleLabel = Instance.new("TextLabel")
-RightRoleLabel.Size = UDim2.new(0.5, -20, 0, 45)
-RightRoleLabel.Position = UDim2.new(0.5, 5, 0, 48)
-RightRoleLabel.BackgroundTransparency = 1
-RightRoleLabel.Text = "🔱NIGHTMARES CO-LEADER🔱\nKAISER"
-RightRoleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-RightRoleLabel.TextSize = 15
-RightRoleLabel.Font = Enum.Font.SourceSansBold
-RightRoleLabel.TextXAlignment = Enum.TextXAlignment.Right
-RightRoleLabel.Parent = MainFrame
-
--- 5. Target Player Name Input Box
-local TargetBox = Instance.new("TextBox")
-TargetBox.Name = "TargetBox"
-TargetBox.Size = UDim2.new(1, -40, 0, 40)
-TargetBox.Position = UDim2.new(0, 20, 0, 102)
-TargetBox.BackgroundColor3 = Color3.fromRGB(32, 32, 45)
-TargetBox.PlaceholderText = "Target Clan Name..."
-TargetBox.PlaceholderColor3 = Color3.fromRGB(130, 130, 150)
-TargetBox.Text = ""
-TargetBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-TargetBox.TextSize = 15
-TargetBox.Font = Enum.Font.SourceSans
-TargetBox.ClearTextOnFocus = false
-TargetBox.Parent = MainFrame
-
-local TargetCorner = Instance.new("UICorner")
-TargetCorner.CornerRadius = UDim.new(0, 8)
-TargetCorner.Parent = TargetBox
-
-TargetBox:GetPropertyChangedSignal("Text"):Connect(function()
-    _G.TargetPlayer = TargetBox.Text
-end)
-
--- ========== SPEED CONTROL DROPDOWN (NEW) ==========
--- Speed Label
-local SpeedLabel = Instance.new("TextLabel")
-SpeedLabel.Size = UDim2.new(0.5, -20, 0, 30)
-SpeedLabel.Position = UDim2.new(0, 20, 0, 150)
-SpeedLabel.BackgroundTransparency = 1
-SpeedLabel.Text = "⏱ Spam Speed (sec)"
-SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-SpeedLabel.TextSize = 14
-SpeedLabel.Font = Enum.Font.SourceSansBold
-SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
-SpeedLabel.Parent = MainFrame
-
--- Dropdown Button
-local DropdownBtn = Instance.new("TextButton")
-DropdownBtn.Name = "DropdownBtn"
-DropdownBtn.Size = UDim2.new(0.5, -20, 0, 35)
-DropdownBtn.Position = UDim2.new(0.5, 0, 0, 147)
-DropdownBtn.BackgroundColor3 = Color3.fromRGB(32, 32, 45)
-DropdownBtn.Text = "1.0 sec"
-DropdownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-DropdownBtn.TextSize = 15
-DropdownBtn.Font = Enum.Font.SourceSansBold
-DropdownBtn.Parent = MainFrame
-
-local DropdownCorner = Instance.new("UICorner")
-DropdownCorner.CornerRadius = UDim.new(0, 8)
-DropdownCorner.Parent = DropdownBtn
-
--- Dropdown Arrow
-local ArrowLabel = Instance.new("TextLabel")
-ArrowLabel.Size = UDim2.new(0, 30, 1, 0)
-ArrowLabel.Position = UDim2.new(1, -30, 0, 0)
-ArrowLabel.BackgroundTransparency = 1
-ArrowLabel.Text = "▼"
-ArrowLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-ArrowLabel.TextSize = 12
-ArrowLabel.Font = Enum.Font.SourceSansBold
-ArrowLabel.Parent = DropdownBtn
-
--- Dropdown List Frame (hidden by default)
-local DropdownFrame = Instance.new("Frame")
-DropdownFrame.Name = "DropdownFrame"
-DropdownFrame.Size = UDim2.new(0.5, -20, 0, 210)
-DropdownFrame.Position = UDim2.new(0.5, 0, 0, 185)
-DropdownFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 38)
-DropdownFrame.BorderSizePixel = 0
-DropdownFrame.Visible = false
-DropdownFrame.ZIndex = 10
-DropdownFrame.Parent = MainFrame
-
-local DropdownFrameCorner = Instance.new("UICorner")
-DropdownFrameCorner.CornerRadius = UDim.new(0, 8)
-DropdownFrameCorner.Parent = DropdownFrame
-
--- ScrollingFrame for speed options
-local SpeedList = Instance.new("ScrollingFrame")
-SpeedList.Size = UDim2.new(1, -10, 1, -10)
-SpeedList.Position = UDim2.new(0, 5, 0, 5)
-SpeedList.BackgroundTransparency = 1
-SpeedList.ScrollBarThickness = 4
-SpeedList.CanvasSize = UDim2.new(0, 0, 0, 280)
-SpeedList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-SpeedList.Parent = DropdownFrame
-
--- Speed options (exactly as requested)
-local speedOptions = {0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0}
-
--- Create each speed option button
-local yPos = 0
-for _, speed in ipairs(speedOptions) do
-    local optionBtn = Instance.new("TextButton")
-    optionBtn.Size = UDim2.new(1, -10, 0, 18)
-    optionBtn.Position = UDim2.new(0, 5, 0, yPos)
-    optionBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
-    optionBtn.Text = string.format("%.1f sec", speed)
-    optionBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    optionBtn.TextSize = 13
-    optionBtn.Font = Enum.Font.SourceSans
-    optionBtn.BorderSizePixel = 0
-    optionBtn.Parent = SpeedList
-
-    local optionCorner = Instance.new("UICorner")
-    optionCorner.CornerRadius = UDim.new(0, 4)
-    optionCorner.Parent = optionBtn
-
-    -- Select this speed when clicked
-    optionBtn.MouseButton1Click:Connect(function()
-        _G.SpamDelay = speed
-        DropdownBtn.Text = string.format("%.1f sec", speed)
-        DropdownFrame.Visible = false
-    end)
-
-    yPos = yPos + 20
-end
-
--- Toggle dropdown visibility
-DropdownBtn.MouseButton1Click:Connect(function()
-    DropdownFrame.Visible = not DropdownFrame.Visible
-end)
-
--- Close dropdown when clicking elsewhere
-MainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        local mousePos = input.Position
-        local absPos = DropdownBtn.AbsolutePosition
-        local absSize = DropdownBtn.AbsoluteSize
-
-        -- If click is outside dropdown button and dropdown frame, close it
-        if not (mousePos.X >= absPos.X and mousePos.X <= absPos.X + absSize.X and
-                mousePos.Y >= absPos.Y and mousePos.Y <= absPos.Y + absSize.Y) then
-            DropdownFrame.Visible = false
-        end
-    end
-end)
--- ========== END SPEED CONTROL ==========
-
--- 6. Control Buttons (Start / Stop) - moved down for speed control
-local StartBtn = Instance.new("TextButton")
-StartBtn.Size = UDim2.new(0, 170, 0, 45)
-StartBtn.Position = UDim2.new(0, 20, 0, 240)
-StartBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 85)
-StartBtn.Text = "START"
-StartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StartBtn.TextSize = 18
-StartBtn.Font = Enum.Font.SourceSansBold
-StartBtn.Parent = MainFrame
-
-local StartCorner = Instance.new("UICorner")
-StartCorner.CornerRadius = UDim.new(0, 8)
-StartCorner.Parent = StartBtn
-
-local StopBtn = Instance.new("TextButton")
-StopBtn.Size = UDim2.new(0, 170, 0, 45)
-StopBtn.Position = UDim2.new(1, -190, 0, 240)
-StopBtn.BackgroundColor3 = Color3.fromRGB(215, 35, 35)
-StopBtn.Text = "STOP"
-StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StopBtn.TextSize = 18
-StopBtn.Font = Enum.Font.SourceSansBold
-StopBtn.Parent = MainFrame
-
-local StopCorner = Instance.new("UICorner")
-StopCorner.CornerRadius = UDim.new(0, 8)
-StopCorner.Parent = StopBtn
-
--- Bottom Footer Credits
-local CreditsLabel = Instance.new("TextLabel")
-CreditsLabel.Size = UDim2.new(1, 0, 0, 35)
-CreditsLabel.Position = UDim2.new(0, 0, 1, -45)
-CreditsLabel.BackgroundTransparency = 1
-CreditsLabel.Text = "NIGHTMARES_SPAMMER Created by KING_KAISER\nUsername: SUPREME_AURA350"
-CreditsLabel.TextColor3 = Color3.fromRGB(160, 160, 175)
-CreditsLabel.TextSize = 13
-CreditsLabel.Font = Enum.Font.SourceSans
-CreditsLabel.Parent = MainFrame
-
--- 7. UI Minimize & Restore Logic
-MinimizeBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    MinimizedIcon.Visible = true
-end)
-
-MinimizedIcon.MouseButton1Click:Connect(function()
-    MainFrame.Visible = true
-    MinimizedIcon.Visible = false
-end)
-
--- 8. Continuous Message Loop Logic (uses _G.SpamDelay dynamically)
-local function startSpamLoop()
-    if _G.LoopMessages then return end
-    _G.LoopMessages = true
-
-    task.spawn(function()
-        while _G.LoopMessages do
-            local target = (_G.TargetPlayer and _G.TargetPlayer ~= "") and _G.TargetPlayer or "👑NIGHTMARES👑 H8RS(😝)"
-
-            local messages = {
-                target .. " TBKX MEH DARK POWER NIGHTMARES VOID WORM NIGHTMARES GOD ALFA WAVE NIGHTMARES PARALLEL PRIME(💎)[//===//////===//////===//////===//////===//////===//////===//////===//////===//]",
-                target .. " TMKX МARE PARALLEL DARK NIGHTMARES HYPER ALFA WAVE PRIME NIGHTMARES FACT NIGHTMARES HYPER(😹)[//===//////===//////===//////===//////===//////===//////===//////===//////===//]",
-                target .. " TMKX MEH NIGHTMARES WORM PARALLEL GOD ALFA HYPER VOID NIGHTMARES WAVE WAVE(🙈)[//===//////===//////===//////===//////===//////===//////===//////===//////===//]",
-                target .. " TBKX MARE NIGHTMARES WORM PARALLEL LEGEND ALFA HYPER VOID NIGHTMARES WAVE POWER(💥)[//===//////===//////===//////===//////===//////===//////===//////===//////===//]"
-            }
-
-            for _, msg in ipairs(messages) do
-                if not _G.LoopMessages then break end
-
+local function applyProfile()
+    -- Look for standard Brookhaven RE Event Folder
+    local RE = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("RemoteEvents")
+    
+    if RE then
+        -- Method 1: Firing via main RE Client Trigger
+        for _, remote in pairs(RE:GetChildren()) do
+            if remote:IsA("RemoteEvent") then
                 pcall(function()
-                    if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                        local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
-                        if generalChannel then
-                            generalChannel:SendAsync(msg)
-                        end
-                    else
-                        ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-                    end
+                    remote:FireServer("RPName", rpNameText)
+                    remote:FireServer("RPBio", rpBioText)
+                    remote:FireServer("SetRPName", rpNameText)
+                    remote:FireServer("SetRPBio", rpBioText)
                 end)
-
-                task.wait(_G.SpamDelay)  -- Uses selected speed
             end
+        end
+    end
 
-            task.wait(_G.SpamDelay * 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0)  -- Extra pause between cycles
+    -- Method 2: Direct UI / Character Customization Hook Fallback
+    pcall(function()
+        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+        if playerGui then
+            -- Set text inside client UI textboxes if visible
+            for _, v in pairs(playerGui:GetDescendants()) do
+                if v:IsA("TextBox") then
+                    if v.Name:lower():find("name") then
+                        v.Text = rpNameText
+                    elseif v.Name:lower():find("bio") or v.Name:lower():find("info") then
+                        v.Text = rpBioText
+                    end
+                end
+            end
         end
     end)
 end
 
-StartBtn.MouseButton1Click:Connect(function()
-    startSpamLoop()
-end)
+-- Run function twice to ensure load registration
+applyProfile()
+task.wait(0.5)
+applyProfile()
 
-StopBtn.MouseButton1Click:Connect(function()
-    _G.LoopMessages = false
-end)
+
